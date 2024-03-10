@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Registration</title>
+{#    <style>#}
+{#        body {#}
+{#            font-family: 'Arial', sans-serif;#}
+{#            background-color: #f5f5f5;#}
+{#            color: #333;#}
+{#            margin: 0;#}
+{#            padding: 0;#}
+{#            background-image: url("/users/static/image/img.png");#}
+        {#text-align: center;#}
+{#        }#}
+{##}
+{#        .container {#}
+{#            max-width: 400px;#}
+{#            margin: 50px auto;#}
+{#            background-color: #fff;#}
+{#            border-radius: 8px;#}
+{#            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);#}
+{#            padding: 20px;#}
+{#        }#}
+{##}
+{#        h2 {#}
+{#            color: #007bff;#}
+{#            text-align: center;#}
+{#        }#}
+{##}
+{#        form {#}
+{#            margin-top: 20px;#}
+{#        }#}
+{##}
+{#        label {#}
+{#            display: block;#}
+{#            margin-bottom: 8px;#}
+{#        }#}
+{##}
+{#        input {#}
+{#            width: 100%;#}
+{#            padding: 10px;#}
+{#            margin-bottom: 16px;#}
+{#            box-sizing: border-box;#}
+{#        }#}
+{##}
+{#        button {#}
+{#            background-color: #007bff;#}
+{#            color: #fff;#}
+{#            padding: 12px 20px;#}
+{#            border: none;#}
+{#            border-radius: 4px;#}
+{#            cursor: pointer;#}
+{#        }#}
+{##}
+{#        button:hover {#}
+{#            background-color: #0056b3;#}
+{#        }#}
+{##}
+{#        .error {#}
+{#            color: red;#}
+{#            margin-top: 5px;#}
+{#        }#}
+{#    </style>#}
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-image: url("/users/static/image/img.png");
+        {#text-align: center;#}
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h2 {
+            color: #4CAF50; /* 绿色标题，适合生物学科 */
+            text-align: center;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc; /* 灰色边框 */
+            border-radius: 4px;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 16px;
+            box-sizing: border-box;
+            border: 1px solid #ccc; /* 灰色边框 */
+            border-radius: 4px;
+            font-size: 16px;
+            color: #555;
+        }
+
+        button {
+            background-color: #4CAF50; /* 绿色按钮，适合生物学科 */
+            color: #fff;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049; /* 按钮悬停时的颜色 */
+        }
+
+        .error {
+            color: red;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <header>
+        <h2>Register</h2>
+    </header>
+    <main>
+        <form method="post" action="{% url 'users:register' %}" id="registration-form">
+            {% csrf_token %}
+            <label for="id_firstname">Firstname:</label>
+            <input type="text" id="id_firstname" name="first_name" placeholder="Enter your firstname" required>
+            <span class="error">{{ form.first_name.errors }}</span>
+
+            <label for="id_lastname">Lastname:</label>
+            <input type="text" id="id_lastname" name="last_name" placeholder="Enter your lastname" required>
+            <span class="error">{{ form.last_name.errors }}</span>
+
+            <label for="id_email">Email:</label>
+            <input type="text" id="id_email" name="email" placeholder="Enter your email address" required>
+            <span class="error">{{ form.email.errors }}</span>
+
+            <label for="id_role">Role:</label>
+            <select id="id_role" name="role" required style="width: 100%; padding: 10px; font-size: 16px;">
+                <option value="" selected disabled>Select a role</option>
+                <option value="0">Student</option>
+                <option value="1">Professor</option>
+                <option value="2">Company</option>
+            </select>
+            <span class="error">{{ form.role.errors }}</span>
+
+
+            <label for="id_password1">Password(longer than 8 characters):</label>
+            <input type="password" id="id_password1" name="password1" placeholder="Enter your password" required>
+            {#            {{ form.password1 }}#}
+            <span class="error">{{ form.password1.errors }}</span>
+
+            <label for="id_password2">Confirm password:</label>
+            <input type="password" id="id_password2" name="password2" placeholder="Confirm your password" required>
+            {#            {{ form.password2 }}#}
+            <span class="error">{{ form.password2.errors }}</span>
+
+            <button type="submit" id="submit-button">Register</button>
+        </form>
+    </main>
+</div>
+
+<script>
+        document.getElementById('registration-form').addEventListener('submit', function (event) {
+            event.preventDefault(); // 阻止表单提交
+            alert('Registration Successful! Please wait for approval');
+            this.submit();
+        });
+</script>
+</body>
+
+</html>
