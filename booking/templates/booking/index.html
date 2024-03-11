@@ -1,0 +1,197 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>make an appointment</title>
+  <link rel="stylesheet" href="{% static 'layui-v2.9.7/layui/css/layui.css' %}">
+  <style>
+    .layui-form-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    
+    .layui-form-label {
+      white-space: nowrap;
+      margin-right: 10px;
+    }
+    
+    .layui-input-block {
+      flex-grow: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .layui-badge {
+      margin-left: 10px;
+    }
+  </style>
+</head>
+<body>
+  <form class="layui-form" action="{% url 'submit_booking' %}" method="post" style="margin: 20px;">
+    {% csrf_token %}
+    <div class="layui-form-item" style="margin: 20px;">
+        <label class="layui-form-label">Choose Facility Type:</label>
+        <div class="layui-input-block">
+            <select name="facility_type" id="facility-type" class="layui-input">
+                <option value="">Select a Facility Type</option>
+                <option value="Greenhouse Zone">Greenhouse Zone</option>
+                <option value="Growth Chamber">Growth Chamber</option>
+            </select>
+        </div>
+    </div>
+  
+<div class="layui-form" style="margin: 20px;">
+  <!-- Start Date Input -->
+  <div class="layui-form-item">
+    <label class="layui-form-label">Choose start date</label>
+    <div class="layui-input-block">
+      <input type="text" name="start_date" id="test-date" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">Start Date Availability-Info</label>
+    <div class="layui-input-block">
+      <span id="availability-info" class="layui-badge layui-bg-gray">None</span>
+    </div>
+  </div>
+
+  <div class="layui-form-item">
+    <label class="layui-form-label">Choose Facility ID:</label>
+    <div class="layui-input-block">
+      <input type="text" name="facility_id" placeholder="Enter Facility ID" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+
+  <!-- End Date Input -->
+  <div class="layui-form-item">
+    <label class="layui-form-label">Choose end date</label>
+    <div class="layui-input-block">
+      <input type="text" name="end_date" id="test-end-date" lay-verify="date" placeholder="yyyy-MM-dd" autocomplete="off" class="layui-input">
+    </div>
+  </div>
+  <div class="layui-form-item">
+    <label class="layui-form-label">End Date Availability-Info</label>
+    <div class="layui-input-block">
+      <span id="end-availability-info" class="layui-badge layui-bg-gray">None</span>
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'layui-v2.9.7/layui/layui.js' %}"></script>
+
+<script>
+  layui.use(['laydate', 'jquery'], function(){
+    var laydate = layui.laydate;
+    var $ = layui.jquery;
+
+    function updateAvailabilityInfo(date, type) {
+      var data = {};
+      data[type] = date;
+      // Only make the AJAX call if a date is selected
+      if (date) {
+        $.ajax({
+          url: '/check_availability',
+          type: 'GET',
+          data: data,
+          success: function(response){
+            var badgeSelector = type === 'start_date' ? '#availability-info' : '#end-availability-info';
+            var badge = $(badgeSelector);
+            badge.removeClass('layui-bg-gray layui-bg-red layui-bg-green');
+            var isAvailable = type === 'start_date' ? response.availability_start_date : response.availability_end_date;
+            if (isAvailable) {
+              badge.text('The room is available, greenhouse zone id is from 0 to 5, Growth Chamber id is from 6 to 25').addClass('layui-bg-green');
+            } else {
+              badge.text('The room is unavailable, greenhouse zone id is from 0 to 5, Growth Chamber id is from 6 to 25').addClass('layui-bg-red');
+            }
+          }
+        });
+      } else {
+        // Reset the badge to "None" if the date is cleared
+        $(type === 'start_date' ? '#availability-info' : '#end-availability-info')
+          .text('None').addClass('layui-bg-gray')
+          .removeClass('layui-bg-red layui-bg-green');
+      }
+    }
+
+    laydate.render({
+      elem: '#test-date',
+      lang: 'en',
+      done: function(value, date){
+        updateAvailabilityInfo(value, 'start_date');
+      }
+    });
+
+    laydate.render({
+      elem: '#test-end-date',
+      lang: 'en',
+      done: function(value, date){
+        updateAvailabilityInfo(value, 'end_date');
+      }
+    });
+
+  });
+</script>
+
+<div class="layui-form-item" style="margin: 20px;">
+  <label class="layui-form-label">Hours Light Period</label>
+  <div class="layui-input-block">
+    <input type="number" name="hours_light" placeholder="Enter hours for light period" autocomplete="off" class="layui-input">
+  </div>
+</div>
+
+<div class="layui-form-item" style="margin: 20px;">
+  <label class="layui-form-label">Hours Dark Period</label>
+  <div class="layui-input-block">
+    <input type="number" name="hours_dark" placeholder="Enter hours for dark period" autocomplete="off" class="layui-input">
+  </div>
+</div>
+
+<div class="layui-form-item" style="margin: 20px;">
+  <label class="layui-form-label">Temperature Light Period (°C)</label>
+  <div class="layui-input-block">
+    <input type="number" name="temp_light" placeholder="Enter temperature for light period" autocomplete="off" class="layui-input">
+  </div>
+</div>
+
+<div class="layui-form-item" style="margin: 20px;">
+  <label class="layui-form-label">Temperature Dark Period (°C)</label>
+  <div class="layui-input-block">
+    <input type="number" name="temp_dark" placeholder="Enter temperature for dark period" autocomplete="off" class="layui-input">
+  </div>
+</div>
+
+<div class="layui-form-item" style="margin: 20px;">
+  <label class="layui-form-label">Humidity Light Period (%RH)</label>
+  <div class="layui-input-block">
+    <input type="number" name="humidity_light" placeholder="Enter humidity for light period" autocomplete="off" class="layui-input">
+  </div>
+</div>
+
+<div class="layui-form-item" style="margin: 20px;">
+  <label class="layui-form-label">Humidity Dark Period (%RH)</label>
+  <div class="layui-input-block">
+    <input type="number" name="humidity_dark" placeholder="Enter humidity for dark period" autocomplete="off" class="layui-input">
+  </div>
+</div>
+
+<div class="layui-form-item" style="margin: 20px;">
+  <label class="layui-form-label">Light Level (µmol·m-2·s-1)</label>
+  <div class="layui-input-block">
+    <input type="number" name="light_level" placeholder="Enter light level" autocomplete="off" class="layui-input">
+  </div>
+</div>
+
+  <!-- ... all your form fields ... -->
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button type="submit" class="layui-btn">Submit Booking</button>
+    </div>
+  </div>
+
+</form>
+
+</body>
+</html>
