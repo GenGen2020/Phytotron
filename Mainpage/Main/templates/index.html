@@ -1,0 +1,43 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1, initial-scale=1.0">
+    <title>main page</title>
+    <link rel="stylesheet" href="{% static 'css\\index.css' %}">
+    <link rel="stylesheet" href="{% static 'css\\base.css' %}">
+</head>
+<body>
+    <div class="nav">
+        <span class="account fr">my account</span>
+    </div>
+    <div class="main">
+        <div class="title">Phytotron booking system</div>
+        {% if hotels %}
+        {% for key, value in hotels.items %}
+        <div class="row">
+            <div class="hotel_name">
+                {{ key }}
+            </div>
+            <div class="room_list">
+                <ul>
+                    {% for room_id in value %}
+                    <li><a class="room" href="rooms/{{key}}/{{room_id}}">{{ room_id }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="row" style="text-align: center;">
+            未查询到酒店
+        </div>
+        {% endif %}
+    </div>
+    <div class="footer">
+        Contact information
+    </div>
+</body>
+</html>

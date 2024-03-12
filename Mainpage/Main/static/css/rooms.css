@@ -1,0 +1,54 @@
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+body {
+    background-color: rgb(240, 240, 240);
+}
+
+.main {
+    margin: 100px auto;
+    padding: 60px 40px;
+    width: 1200px;
+}
+ 
+.box {
+    border: 1px solid black;
+    background-color: white;
+    overflow: hidden;
+}
+
+.main .head_line {
+    overflow: hidden;
+}
+
+.main .status {
+    padding: 20px 20px;
+    width: 400px;
+    text-align: center;
+}
+
+.main .status .info {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: underline;
+}
+
+.main .dates {
+    width: 550px;
+    padding: 20px 30px;
+}
+
+.main .forms {
+    margin: 30px auto;
+    width: 600px;
+    text-align: center;
+}
+
+.main .forms .ipt_line {
+    margin: 5px auto;
+}

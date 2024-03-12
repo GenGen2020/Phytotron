@@ -1,0 +1,46 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{{ hotel }} - {{ room_id }}</title>
+        <link rel="stylesheet" href="{% static 'css/base.css' %}">
+        <link rel="stylesheet" href="{% static 'css/rooms.css' %}">
+    </head>
+    <body>
+        <div class="main box">
+            <div class="head_line">
+                <div class="status box left">
+                    <h3>Room Status</h3>
+                    <span class="info">
+                        {% if data.status %}
+                        {{ data.msg }}
+                        {% else %}
+                        {{ data.error }}
+                        {% endif %}
+                    </span>
+                </div>
+                <div class="dates box right">
+                    <h3>select Dates</h3>
+                    <input type="date">
+                </div>
+            </div>
+            <div class="forms box">
+                <h3>request form</h3>
+                <form action="booking">
+                    <div class="ipt_line">
+                        hotel: <input type="text" value="{{ hotel }}" disabled>
+                    </div>
+                    <div class="ipt_line">
+                        room: <input type="text" vlaue="{{ room_id }}" disabled>
+                    </div>
+                    <div class="ipt_line">
+                        <input type="submit" name="" id="">
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
