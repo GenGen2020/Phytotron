@@ -1,0 +1,233 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phytotron Interface</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <style>
+        body {
+            background-image: url("/users/static/image/img.png");
+            background-size: cover; /* 确保背景图片覆盖整个页面 */
+            background-position: center; /* 中心对齐背景图片 */
+        }
+
+        .section-header {
+            background-color: transparent;
+            padding: 1rem;
+            border-bottom: 1px solid #e3e6e8;
+        }
+        /* Add your styles here */
+        .image-section {
+            display: flex;
+            justify-content: space-between; /* Ensures space between elements */
+            align-items: center; /* Centers items vertically */
+            margin-bottom: 2rem; /* Space below the section */
+        }
+         h1, h3 {
+            text-align: center;
+            color: #4CAF50; /* 绿色标题，适合生物学科 */
+        }
+         h2, p, a {
+            color: black;; /* 设置为白色 */
+            font-weight: bold;
+        }
+        .image-container img {
+            width: 100%; /* Makes the image fill the container */
+            height: auto; /* Keeps the aspect ratio of the image */
+        }
+
+        .section-header {
+            background-color: transparent;
+            padding: 1rem;
+            border-bottom: 1px solid #e3e6e8;
+        }
+        .section {
+            margin-bottom: 2rem;
+        }
+        .box {
+            border: 1px solid #ffffff;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            background-color: #ffffff;
+            flex-grow: 1;
+            flex-basis: calc(16.666% - 0.5rem);
+        }
+        .box:last-child {
+            margin-right: 0;
+        }
+        .contact-info {
+            border: 1px solid #dee2e6;
+            padding: 1rem;
+            background-color: #fff;
+        }
+        .full-width {
+            width: 100%;
+        }
+        .no-margin-right {
+            margin-right: 0;
+        }
+        .box {
+            background-color: transparent; /* 浅灰色背景 */
+            color: black; /* 深灰色文字 */
+            font-weight: bold;
+            border: 2px solid black; /* 边框颜色 */
+            margin-bottom: 1rem; /* 下边距 */
+            padding: 2rem; /* 内边距 */
+            text-align: center; /* 文字居中 */
+            font-size: 1.5rem; /* 文字大小 */
+            border-radius: 0.5rem; /* 边框圆角 */
+            transition: border-color 0.3s, box-shadow 0.3s; /* 平滑过渡效果 */
+        }
+
+        .box:hover {
+            border-color: #007bff; /* 鼠标悬停时的边框颜色 */
+            box-shadow: 0 0 8px #007bff; /* 鼠标悬停时的亮光效果 */
+        }
+        .contact-info {
+            border: 1px solid #dee2e6;
+            padding: 1rem;
+            background-color: transparent; /* 浅灰色背景 */
+            margin-bottom: 5rem; /* 增加底部外边距 */
+        }
+
+        .contact-detail {
+            margin-bottom: 10px; /* 增加信息项之间的间距 */
+        }
+        .box {
+    margin-right: 0.5rem;
+    margin-bottom: 0.5rem;
+    padding: 2rem;
+    text-align: center;
+    flex-grow: 1;
+    /* 设置flex-basis为一个百分比值，假设每行显示4个box */
+    flex-basis: calc(25% - 1rem); /* 减去margin的宽度以适应容器 */
+    transition: border-color 0.3s, box-shadow 0.3s; /* 平滑过渡效果 */
+}
+       .section {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+}
+       a {
+  text-decoration: none;
+}
+
+
+.box {
+    flex: 0 0 auto; /* 不允许盒子增长或缩小 */
+    width: 200px; /* 设置固定宽度 */
+    height: 100px; /* 设置固定高度，根据需要调整 */
+    border: 2px solid black; /* 边框颜色 */
+    margin-bottom: 1rem; /* 下边距 */
+    margin-right: 1rem; /* 右边距，确保盒子之间有间隔 */
+    padding: 1rem; /* 内边距 */
+    text-align: center; /* 文字居中 */
+    font-size: 1rem; /* 文字大小 */
+    border-radius: 0.5rem; /* 边框圆角 */
+    transition: border-color 0.3s, box-shadow 0.3s; /* 平滑过渡效果 */
+}
+
+/* 防止最后一个盒子的右边距 */
+.box:last-child {
+    margin-right: 0;
+}
+
+
+
+    </style>
+</head>
+<body>
+
+<div class="container mt-4" style="background-color: white">
+
+        <div class="row">
+            <div class="col text-center">
+                <h1 style="margin-top: 20px">Phytotron</h1>
+            </div>
+        </div>
+        <!-- My Account link aligned to the right -->
+        <div class="row">
+            <div class="col d-flex justify-content-end">
+                {% if user.username %}
+                    <a href="/mypage" class="mt-2">Welcome: {{ user.username }}</a>
+                {% else %}
+                    <span class="mt-2">Welcome: Guest</span>
+                {% endif %}
+            </div>
+        </div>
+
+    <!-- Growth Chamber Section -->
+    <div class="section">
+        <div class="section-header">
+            <h2>Greenhouse</h2>
+        </div>
+        <div class="d-flex flex-wrap">
+            <div class="box full-width">Greenhouse 1（Vistor）</div>
+            <div class="box full-width"><a href="/room?type=Greenhouse&&id=2">Greenhouse 2</a></div>
+            <div class="box full-width"><a href="/room?type=Greenhouse&&id=3">Greenhouse 3</a></div>
+            <div class="box full-width"><a href="/room?type=Greenhouse&&id=4">Greenhouse 4</a></div>
+            <div class="box full-width"><a href="/room?type=Greenhouse&&id=5">Greenhouse 5</a></div>
+            <div class="box full-width"><a href="/room?type=Greenhouse&&id=6">Greenhouse 6</a></div>
+
+        </div>
+    </div>
+
+    <!-- Greenhouse Section -->
+    <div class="section">
+        <div class="section-header">
+            <h2>Growth Chamber</h2>
+        </div>
+        <div class="d-flex flex-wrap">
+            <div class="box full-width"><a href="/room?type=Chambers&&id=1">Chambers 1</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=2">Chambers 2</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=3">Chambers 3</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=4">Chambers 4</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=5">Chambers 5</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=6">Chambers 6</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=7">Chambers 7</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=8">Chambers 8</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=9">Chambers 9</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=10">Chambers 10</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=11">Chambers 11</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=12">Chambers 12</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=13">Chambers 13</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=14">Chambers 14</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=15">Chambers 15</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=16">Chambers 16</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=17">Chambers 17</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=18">Chambers 18</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=19">Chambers 19</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=20">Chambers 20</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=21">Chambers 21</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=22">Chambers 22</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=23">Chambers 23</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=24">Chambers 24</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=25">Chambers 25</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=26">Chambers 26</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=27">Chambers 27</a></div>
+            <div class="box full-width"><a href="/room?type=Chambers&&id=28">Chambers 28</a></div>
+
+        </div>
+    </div>
+
+    <!-- Contact Information Section -->
+    <div class="contact-info">
+        <h2 style="height: 50px">Contact Information</h2>
+        <p class="contact-detail"><strong>Address:</strong> 1234 Street Name, City Name, Country</p>
+        <p class="contact-detail"><strong>Phone:</strong> +1 (234) 567-890</p>
+        <p class="contact-detail"><strong>Email:</strong> example@example.com</p>
+        <p class="contact-detail"><strong>Fax:</strong> +1 (234) 567-891</p>
+        <img src="{% static 'image/queen.jpg' %}" alt="Description of Image" style="width:100%;max-width:200px;">
+    </div>
+
+</div>
+
+
+<script src="{% static 'js/bootstrap.js' %}"></script>
+</body>
+</html>
