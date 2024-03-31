@@ -14,7 +14,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views.decorators.csrf import csrf_exempt
 
 from users.forms import RegistrationForm, EmailAuthenticationForm
-from users.models import CustomUser, ResearchRequest, Order
+from users.models import CustomUser, ResearchRequest, Order, Price
 
 
 @csrf_exempt
@@ -62,17 +62,19 @@ def changepassword(request):
 # Create your views here.
 def register(request):
     if request.method == 'POST':
-        result = request.POST.dict()
-        print(result)
-        uid = str(uuid.uuid4())
-        result["username"] = result["first_name"] + uid[0:4]
-        form = RegistrationForm(result)
-        print(form.is_valid())
+        form = RegistrationForm(request.POST, request.FILES)  # Include request.FILES for file uploads
         if form.is_valid():
-            user = form.save()
-            return redirect('users:main')  # Redirect to the home page or another desired page
+            # If you need to modify or add any data before saving, do it here.
+            user = form.save(commit=False)  # Create user object but don't save to the database yet
+            uid = str(uuid.uuid4())
+            user.username = form.cleaned_data['first_name'] + uid[0:4]  # Now it's safe to add a username
+            user.save()  # Now save the user to the database
+            # If the form has many-to-many fields that need to be saved, do it after saving the model instance:
+            # form.save_m2m()
+            return redirect('users:main')  # Redirect to the desired page after successful registration
     else:
         form = RegistrationForm()
+
     return render(request, 'register/register.html', {'form': form})
 
 
@@ -246,13 +248,12 @@ def submit_form(request):
         if overlapping_requests or pedding_requests:
             return JsonResponse({'error': 'The room has been occupied within the date'})
         # Create a new ResearchRequest instance
-        unit_price = 11
         between_days = datetime.strptime(end_date, '%Y-%m-%d') - datetime.strptime(start_date, '%Y-%m-%d')
         days = abs(between_days.days)
         if user.queen is 1:
-            unit_price = 11
+            unit_price = Price.objects.get(type=form_data['labRoomNumber']).price
         else:
-            unit_price = 13
+            unit_price = Price.objects.get(type=form_data['labRoomNumber']).external_price
         print(unit_price)
         price = days * unit_price
         research_request = ResearchRequest(
@@ -261,7 +262,6 @@ def submit_form(request):
             primary_contact=form_data.get('primaryContact', ''),
             department=form_data.get('department', ''),
             is_active=animal,
-            price=price,
             lab_room_number=form_data.get('labRoomNumber', ''),
             contact_phone=form_data.get('contactPhone', ''),
             contact_after_hours=form_data.get('contactAfterHours', ''),
@@ -283,6 +283,7 @@ def submit_form(request):
         # Save the new instance to the database
         research_request.save()
     except Exception as e:
+        raise e
         return JsonResponse({'error': 'error'})
     # Return a success response
     return JsonResponse({'status': 'success', 'message': 'Research request submitted successfully'})

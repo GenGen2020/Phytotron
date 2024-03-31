@@ -9,13 +9,11 @@ class RegistrationForm(UserCreationForm):
     email = forms.EmailField(required=True)
     role = forms.ChoiceField(choices=CustomUser.ROLE, required=True)
     queen = forms.BooleanField(required=False, initial=False)  # 假设这是一个可选的布尔字段
-    supervisor = forms.CharField(required=False)  # 将BooleanField更改为CharField
     review_file = forms.FileField(required=True)  # 添加审查文件字段，标记为必填
 
     class Meta:
         model = CustomUser
-        fields = ["username", "first_name", "last_name", "role", "queen", "email", "password1", "password2",
-                  "supervisor", "review_file"]
+        fields = ["username", "first_name", "last_name", "role", "queen", "email", "password1", "password2", "review_file"]
 
 def clean_email(self):
         email = self.cleaned_data.get('email')  # 使用get以避免KeyError
