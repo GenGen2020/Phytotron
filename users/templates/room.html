@@ -256,7 +256,6 @@
 
         $('#researchProjectForm').on('submit', function (e) {
             e.preventDefault(); // Prevent the default form submission
-
         var agreement1Checked = $('input[name="agreement1"]').prop('checked');
         var agreement2Checked = $('input[name="agreement2"]').prop('checked');
 
@@ -307,6 +306,7 @@ $('#researchProjectForm').find('input[type="checkbox"]:checked, input[type="radi
                 success: function (response) {
                     // Handle success
                     const messageBox = document.getElementById('messageBox');
+                     messageBox.innerHTML = ''
                     if (response.success) {
                         messageBox.innerHTML = `<div class="alert alert-success" role="alert">${response.success}</div>`;
                     } else if (response.error) {

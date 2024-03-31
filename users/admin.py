@@ -46,6 +46,7 @@ class CustomUserAdmin(UserAdmin):
     model = CustomUser
     fieldsets = UserAdmin.fieldsets + (
         (None, {'fields': ('avatar',)}),
+        (None, {'fields': ('review_file',)}),
         (None, {'fields': ('personal_signature',)}),
     ) + (
                     (None, {'fields': ('role',)}),
@@ -93,13 +94,10 @@ def generate_order_number():
     # 生成一个包含数字和小写字母的 18 位随机字符串
     # Current time in milliseconds since epoch
     current_millis = int(datetime.now().timestamp() * 1000)
-
     # Convert to string and take the last 5 digits
     time_str = str(current_millis)[-5:]
-
     # Generate a random 3-digit number and convert to string
-    random_str = ''.join(random.choices(string.digits, k=6))
-
+    random_str = ''.join(random.choices(string.digits, k=4))
     # Combine both strings to form an 8-character order ID
     return time_str + random_str
 
@@ -139,12 +137,14 @@ class ResearchRequestAdmin(admin.ModelAdmin):
                         price = price_type.external_price
                     else:
                         price = price_type.price
+                    if query.bench is not '' and query.bench is not None:
+                        bench = len(str(query.bench).split(","))
                     order = Order.objects.create(
                         order_number=order_number,
                         research_request=query,
                         date=date.today(),
-                        basic_billing_fee=price * days,
-                        total_amount=price * days
+                        basic_billing_fee=price * days * bench,
+                        total_amount=price * days * bench
                     )
         except Exception as e:
             messages.error(request, f"An error occurred: {e}. Changes have been rolled back.")
@@ -186,7 +186,7 @@ class OrderAdmin(admin.ModelAdmin):
                 order_id = query.order_number
                 order = Order.objects.get(pk=order_id)
                 # 构建PDF内容
-                image_path = 'D:\\chatgpt\\Phytotron-main\\users\\static\\image\\logo.jpg'  # 示例图像路径
+                image_path = 'users\\static\\image\\logo.jpg'  # 示例图像路径
                 days = (order.research_request.end_date - order.research_request.start_date).days
                 projectName = Price.objects.get(type=order.research_request.lab_room_number)
                 if order.research_request.applicant_account.is_queen == 1:
@@ -196,13 +196,17 @@ class OrderAdmin(admin.ModelAdmin):
                 basic_billing_fee = order.basic_billing_fee
                 order_details = OrderDetail.objects.filter(order=order)
                 other = "(-15%)" if query.is_discounted is True else ""
+                if query.research_request.bench is not '' and query.research_request.bench is not None:
+                    bench_len = len(str(query.research_request.bench).split(","))
+                else:
+                    bench_len = 1
                 order_details = [
-                    {"Description": i.type + other , "Quantity": 1, "Unit Price": i.price, "Amount": i.price, "Tax Code": "HST"}
+                    {"Description": i.type , "Quantity": 1, "Unit Price": i.price, "Amount": i.price, "Tax Code": "HST"}
                     for
                     i in order_details]
                 orders_price = order.total_amount - order.basic_billing_fee
                 items_list = [
-                                 {"Description": f"{order.research_request.lab_room_number}", "Quantity": str(days),
+                                 {"Description": f"{order.research_request.lab_room_number}" + other, "Quantity": str(days*bench_len),
                                   "Unit Price": price,
                                   "Amount": basic_billing_fee,
                                   "Tax Code": "HST"},

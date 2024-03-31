@@ -3,8 +3,7 @@ import random
 import string
 import uuid
 from datetime import datetime, timedelta
-
-from django.conf import settings
+from django.contrib import messages
 from django.contrib.auth import logout as out
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import AuthenticationForm
@@ -64,14 +63,17 @@ def register(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST, request.FILES)  # Include request.FILES for file uploads
         if form.is_valid():
-            # If you need to modify or add any data before saving, do it here.
-            user = form.save(commit=False)  # Create user object but don't save to the database yet
+            # Create user object but don't save to the database yet
+            user = form.save(commit=False)
             uid = str(uuid.uuid4())
-            user.username = form.cleaned_data['first_name'] + uid[0:4]  # Now it's safe to add a username
+            # Now it's safe to add a username
+            user.username = form.cleaned_data['first_name'] + uid[0:4]
             user.save()  # Now save the user to the database
-            # If the form has many-to-many fields that need to be saved, do it after saving the model instance:
-            # form.save_m2m()
-            return redirect('users:main')  # Redirect to the desired page after successful registration
+
+            # Add a success message
+            messages.success(request, 'Registration successful! Please wait for approval.')
+
+            return render(request, 'register/register.html',)  # Redirect to the desired page after successful registration
     else:
         form = RegistrationForm()
 
@@ -192,8 +194,6 @@ def submit_room(request):
     radio_options = []
     if type == "Greenhouse":
         radio_options = [{'value': f'bench {i}', 'label': f'bench {i}'} for i in range(1, int(bench[id]) + 1)]
-    print(radio_options)
-
     result = {"roomid": room_id, "refuse": all_data, "clean_date": clean_date, "pedding_date": pedding_date,
               "radio_options": radio_options, 'type': type}
 
@@ -248,14 +248,14 @@ def submit_form(request):
         if overlapping_requests or pedding_requests:
             return JsonResponse({'error': 'The room has been occupied within the date'})
         # Create a new ResearchRequest instance
-        between_days = datetime.strptime(end_date, '%Y-%m-%d') - datetime.strptime(start_date, '%Y-%m-%d')
-        days = abs(between_days.days)
-        if user.queen is 1:
-            unit_price = Price.objects.get(type=form_data['labRoomNumber']).price
-        else:
-            unit_price = Price.objects.get(type=form_data['labRoomNumber']).external_price
-        print(unit_price)
-        price = days * unit_price
+        # between_days = datetime.strptime(end_date, '%Y-%m-%d') - datetime.strptime(start_date, '%Y-%m-%d')
+        # days = abs(between_days.days)
+        # if user.queen is 1:
+        #     unit_price = Price.objects.get(type=form_data['labRoomNumber']).price
+        # else:
+        #     unit_price = Price.objects.get(type=form_data['labRoomNumber']).external_price
+        # print(unit_price)
+        # price = days * unit_price
         research_request = ResearchRequest(
             applicant_account=applicant_account,
             primary_investigator=form_data.get('primaryInvestigator', ''),
