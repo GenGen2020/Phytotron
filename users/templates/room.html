@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Project Form</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="//code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script>
+        $(function () {
+            // 不可选的日期
+            var disabledDates = {{ refuse|safe}};
+            // 需要标红的日期
+            var highlightDates = {{ clean_date|safe }};
+            var bluedata = {{ pedding_date|safe }};
+
+            $(".all").datepicker({
+                beforeShowDay: function (date) {
+                    var dateString = jQuery.datepicker.formatDate('yy-mm-dd', date);
+
+                    var isDisabled = disabledDates.indexOf(dateString) > -1;
+                    var isHighlight = highlightDates.indexOf(dateString) > -1;
+                    var blue_var = bluedata.indexOf(dateString) > -1;
+
+                    if (isDisabled) {
+                        return [false, "", "Unavailable"]; // 不可选
+                    } else if (isHighlight) {
+                        return [true, "highlight", "clean Day"]; // 标红
+                    } else if (blue_var) {
+                        return [true, "blue", "Booked Day"]; // 标红
+
+                    } else {
+                        return [true];
+                    }
+                }
+            });
+        });
+    </script>
+    <style>
+        body {
+            background-image: url("/users/static/image/img.png");
+            background-repeat: no-repeat;
+            background-size: cover; /* 这会确保图片覆盖整个元素，同时保持宽高比 */
+            background-position: center; /* 使背景图片居中 */
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .section-header {
+            background-color: #ffffff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .form-section {
+            margin-bottom: 20px;
+        }
+
+        .form-control {
+            margin-bottom: 10px;
+        }
+
+        .checkbox-group {
+            margin-bottom: 10px;
+        }
+
+        .submit-btn {
+            margin-top: 20px;
+        }
+
+        body {
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .section-header {
+            background-color: #ffffff;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .submit-btn {
+            margin-top: 20px;
+        }
+
+        .highlight a {
+            background-color: red !important;
+            color: white !important;
+        }
+
+        .blue a {
+            background-color: paleturquoise !important;
+            color: white !important;
+        }
+
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <form id="researchProjectForm">
+        <div class="row">
+            <div class="col d-flex justify-content-end">
+                <a href="#myAccount" class="mt-2">Welcome: {{ user.username }}</a>
+            </div>
+        </div>
+    <div class="introduction">
+        <h2>Important Notes:</h2>
+    <p></p>
+        <div id="contentContainer">
+        <!-- 这里将动态填充内容 -->
+    </div>
+</ol>
+</ol>
+</div>
+        <div class="section-header">
+
+            <h2>SECTION 1: Name and Contact</h2>
+        </div>
+        <div class="form-section" style="margin-top: 20px">
+            <label for="primaryInvestigator">Primary Investigator</label>
+            <input type="text" class="form-control" id="primaryInvestigator" name="primaryInvestigator">
+
+            <label for="primaryContact">Primary Contact</label>
+            <input type="text" class="form-control" id="primaryContact" name="primaryContact">
+
+            <label for="department">Department (or Company if external)</label>
+            <input type="text" class="form-control" id="department" name="department">
+
+            <label for="labRoomNumber">Lab Room Number (or Address if external)</label>
+            <input type="text" class="form-control" id="labRoomNumber" value="{{ roomid }}" name="labRoomNumber"
+                   readonly>
+
+       <div class="radio-group">
+        {% for option in radio_options %}
+            <div>
+                <input type="checkbox" name="radioOption[]" value="{{ option.value }}" {% if option.value in selected_options %}checked{% endif %}>
+                <label>{{ option.label }}</label>
+            </div>
+        {% endfor %}
+
+
+</div>
+
+
+
+            <label for="contactPhone">Contact Phone Number (Work)</label>
+            <input type="text" class="form-control" value="{{ user.telephone }}" id="contactPhone" name="contactPhone">
+
+            <label for="contactAfterHours">Contact After Hours Phone Number (Cell)</label>
+            <input type="text" class="form-control" id="contactAfterHours" name="contactAfterHours">
+
+            <label for="email">E-mail</label>
+            <input type="email" class="form-control" id="email" value="{{ user.email }}" name="email">
+        </div>
+
+        <div class="section-header">
+            <h2>SECTION 2: Request Category</h2>
+        </div>
+        <div class="form-section" style="margin-top: 20px">
+            <label for="requestCategory">Request Category</label>
+            <select class="form-control" id="requestCategory" name="requestCategory">
+                <option selected>Choose...</option>
+                <option value="1">Biology Department Faculty Research</option>
+                <!-- Other categories if needed -->
+            </select>
+
+            <label for="grantCode">CFOAPAL or Grant Code or Class code</label>
+            <input type="text" class="form-control" id="grantCode" name="grantCode">
+
+            <label for="projectTitle">Project Title - Brief Description</label>
+            <input type="text" class="form-control" id="projectTitle" name="projectTitle">
+
+            <label for="plantSpecies">Plant Species</label>
+            <input type="text" class="form-control" id="plantSpecies" name="plantSpecies">
+
+            <label for="currentDate">Current Date</label>
+            <input type="text" class="form-control " id="currentDate" name="currentDate" readonly>
+
+
+            <label for="startDate">Desired Start Date</label>
+            <input type="text" class="form-control all" id="startDate" name="startDate">
+
+            <label for="endDate">Desired End Date</label>
+            <input type="text" class="form-control all" id="endDate" name="endDate">
+
+        </div>
+
+
+        <div class="section-header">
+            <h2>SECTION 3: Greenhouse & Growth Conditions</h2>
+        </div>
+        <div class="form-section" style="margin-top: 20px">
+            <label for="zoneNumber">Preferred Zone Number</label>
+            <input type="text" class="form-control" id="zoneNumber" name="zoneNumber">
+
+            <label for="numberOfTables">Number of Tables</label>
+            <input type="number" class="form-control" id="numberOfTables" name="numberOfTables">
+
+            <label for="photoperiod">Photoperiod (Hours)</label>
+            <input type="number" class="form-control" id="photoperiod" name="photoperiod">
+
+            <div class="checkbox-group">
+    <label><input type="checkbox" name="animal" value="animal"> Animal Care or safety Concern?</label>
+  </div>
+
+            <label for="minTemperature">Minimum Temperature (°C)</label>
+            <input type="number" class="form-control" id="minTemperature" name="minTemperature">
+
+            <label for="requirementsClarification">Special Requirements Clarification</label>
+            <textarea class="form-control" id="requirementsClarification" name="requirementsClarification"></textarea>
+
+            <div class="checkbox-group">
+  <div>
+    <label><input type="checkbox" name="agreement1" value="agreement1"> I agree that the Phytotron is not responsible for equipment failure associated with building infrastructure, rejuvenation, or intermittent power failure.</label>
+  </div>
+  <div>
+    <label><input type="checkbox" name="agreement2" value="agreement2"> I agree that I will be responsible for maintaining general levels of cleanliness within potting room, greenhouse zones and the surrounding areas. This includes cleanliness associated with minimizing the introduction and spread of pests and disease within the facility.</label>
+  </div>
+</div>
+        </div>
+
+        <button type="submit" class="btn btn-primary submit-btn">Submit</button>
+    </form>
+    <div id="messageBox" class="mt-3"></div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+<script>
+    $(function () {
+        // DatePicker and other initialization code here
+
+        $('#researchProjectForm').on('submit', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+        var agreement1Checked = $('input[name="agreement1"]').prop('checked');
+        var agreement2Checked = $('input[name="agreement2"]').prop('checked');
+
+        if (!agreement1Checked || !agreement2Checked) {
+            alert("Please agree to both terms before submitting the form.");
+            return;
+        }
+
+        // Check if end_date is greater than start_date
+        var startDate = new Date($('#startDate').val());
+        var endDate = new Date($('#endDate').val());
+
+        if (endDate <= startDate) {
+            alert("End date must be greater than start date.");
+            return;
+        }
+
+           var formData = {};
+$('#researchProjectForm').find('input[type="checkbox"]:checked, input[type="radio"]:checked, input[type="text"], select, textarea').each(function() {
+    var name = $(this).attr('name');
+    var value = $(this).val();
+
+    // 检查是否是多选框并且已经选中
+    if($(this).is(':checkbox')) {
+        // 如果formData中已经有这个name，则在值前加上逗号分隔符
+        if (formData[name]) {
+            formData[name] += ',' + value;
+        } else {
+            // 否则直接赋值
+            formData[name] = value;
+        }
+    } else {
+        // 对于非多选框（包括单选框、文本框等），直接赋值
+        formData[name] = value;
+    }
+});
+            console.log(formData); // For debugging, shows form data in browser console
+
+            // Send data submission via AJAX POST request
+            submitFormData(formData);
+        });
+
+        function submitFormData(formData) {
+            $.ajax({
+                type: 'POST',
+                url: '/submitInfo/', // The URL of your 'submitInfo' endpoint
+                data: formData,
+                success: function (response) {
+                    // Handle success
+                    const messageBox = document.getElementById('messageBox');
+                    if (response.success) {
+                        messageBox.innerHTML = `<div class="alert alert-success" role="alert">${response.success}</div>`;
+                    } else if (response.error) {
+                        messageBox.innerHTML = `<div class="alert alert-danger" role="alert">${response.error}</div>`;
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                    console.error("Submission failed:", status, error);
+                    alert('Failed to submit the form. Please try again.');
+                }
+            });
+        }
+    });
+</script>
+
+<script>
+    // 获取当前日期和时间
+    var currentDate = new Date();
+
+    // 格式化日期和时间
+  var formattedDate = currentDate.toISOString().slice(0, 10);
+
+    // 将格式化后的日期和时间设置到输入框中
+    document.getElementById("currentDate").value = formattedDate;
+</script>
+ <script>
+        // 获取类型
+        var type = "{{ type }}"; // 这里假设您的模板引擎可以将type变量传递到JavaScript中
+
+        // 根据类型渲染内容
+        if (type === 'Greenhouse') {
+            var content = [
+                "Allocated space must be used to utmost efficiency - requested duration of use is restricted to the minimum time required to achieve desired results.",
+                "Requests for extension must be received by the Phytotron Manager at least 3 weeks prior to the end date specified in the original request and is subject toapproval by the Phytotron Committee.",
+                "Teaching requests receive priority over Research requests for Zone 1 bench space allocation only.",
+                "Researchers may appeal a decision by the Phytotron Committee to the Head of Biology."
+            ];
+        } else {
+            var content = [
+                "A separate request form must be submitted for each chamber desired",
+                "Requests for extensions must be received by the Phytotron Manager at least 3 weeks prior to the end date specified in the original request.",
+                "In the event of potential conflict, requests may be forwarded to the Phytotron Committee for review.",
+                "Chamber space requests are prioritized according to the request category (see Section 2 below).",
+                "Researchers may appeal a decision by the Phytotron Committee to the Head of Biology."
+            ];
+        }
+
+        // 将内容填充到页面中
+        var contentHtml = "<ol>";
+        for (var i = 0; i < content.length; i++) {
+            contentHtml += "<li>" + content[i] + "</li>";
+        }
+        contentHtml += "</ol>";
+
+        document.getElementById("contentContainer").innerHTML = contentHtml;
+    </script>
