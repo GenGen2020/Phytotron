@@ -1,6 +1,7 @@
 from django.test import TestCase, Client
 from django.urls import reverse
-from users.models import CustomUser
+from users.models import CustomUser, Order
+
 
 class RegisterTestCase(TestCase):
 

@@ -124,13 +124,13 @@ class Order(models.Model):
     date = models.DateField()
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     basic_billing_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
-    # 假设附件是任意类型的文件，如果是图片可以使用ImageField
     attachment = models.FileField(upload_to='users/static/pdfs/', null=True, blank=True)
-    # 表示订单是否完成
     is_completed = models.BooleanField(default=False)
+    is_discounted = models.BooleanField(default=False)  # Indicates if the order has a discount applied
 
     def __str__(self):
         return f"Order Number: {self.order_number}, Date: {self.date}, Total Amount: {self.total_amount}"
+
 
 
 class OrderDetail(models.Model):

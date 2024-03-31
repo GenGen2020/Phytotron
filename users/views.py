@@ -289,6 +289,7 @@ def submit_form(request):
 
 
 def logout(request):
+    out(request)
     return redirect('users:login')
 
 

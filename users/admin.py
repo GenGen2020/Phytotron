@@ -1,6 +1,8 @@
 import os
 import string
 import random
+from decimal import Decimal
+
 from django.conf import settings
 from django.contrib.auth.admin import UserAdmin
 from django.contrib import messages
@@ -193,8 +195,9 @@ class OrderAdmin(admin.ModelAdmin):
                     price = projectName.external_price
                 basic_billing_fee = order.basic_billing_fee
                 order_details = OrderDetail.objects.filter(order=order)
+                other = "(-15%)" if query.is_discounted is True else ""
                 order_details = [
-                    {"Description": i.type, "Quantity": 1, "Unit Price": i.price, "Amount": i.price, "Tax Code": "HST"}
+                    {"Description": i.type + other , "Quantity": 1, "Unit Price": i.price, "Amount": i.price, "Tax Code": "HST"}
                     for
                     i in order_details]
                 orders_price = order.total_amount - order.basic_billing_fee
@@ -233,12 +236,23 @@ class OrderAdmin(admin.ModelAdmin):
                 # 更新Order模型的attachment字段
                 with open(pdf_path, 'rb') as pdf_file:
                     order.attachment.save(pdf_filename, File(pdf_file), save=True)
-                messages.success(request,f"PDF for order {order.order_number} generated and saved.")
+                messages.success(request, f"PDF for order {order.order_number} generated and saved.")
         except Order.DoesNotExist:
-            messages.error(request,"Order not found.")
+            messages.error(request, "Order not found.")
 
-    actions = [generate_pdf_for_order]  # 添加你定义的动作
+    def discount(self, request, queryset):
+        for query in queryset:
+            if query.is_discounted is False:
+                basic_price = query.basic_billing_fee * Decimal('0.85')
+                total_price = query.total_amount - query.basic_billing_fee + basic_price
+                query.total_amount = total_price
+                query.is_discounted = True
+                query.save()
+        messages.success(request, f"discounted successfully")
+
+    actions = [generate_pdf_for_order, discount]  # 添加你定义的动作
     generate_pdf_for_order.type = 'info'
+    discount.type = 'success'
 
     def save_formset(self, request, form, formset, change):
         # Get new and updated instances
