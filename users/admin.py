@@ -201,9 +201,8 @@ class OrderAdmin(admin.ModelAdmin):
                 else:
                     bench_len = 1
                 order_details = [
-                    {"Description": i.type , "Quantity": 1, "Unit Price": i.price, "Amount": i.price, "Tax Code": "HST"}
-                    for
-                    i in order_details]
+                    {"Description": i.price.type , "Quantity": 1, "Unit Price": i.price.price, "Amount": i.price.price, "Tax Code": "HST"}
+                    for i in order_details]
                 orders_price = order.total_amount - order.basic_billing_fee
                 items_list = [
                                  {"Description": f"{order.research_request.lab_room_number}" + other, "Quantity": str(days*bench_len),
@@ -221,7 +220,7 @@ class OrderAdmin(admin.ModelAdmin):
                     "Customer ID": order.research_request.applicant_account.id,
                     "Invoice Date": order.date,
                     "Payment Terms": "Due upon receipt",
-                    "Currency": "USD"
+                    "Currency": "CAD"
                 }
                 bill_to_info = [
                     "Performance Plants Inc.",
@@ -241,7 +240,8 @@ class OrderAdmin(admin.ModelAdmin):
                 with open(pdf_path, 'rb') as pdf_file:
                     order.attachment.save(pdf_filename, File(pdf_file), save=True)
                 messages.success(request, f"PDF for order {order.order_number} generated and saved.")
-        except Order.DoesNotExist:
+        except Exception as e :
+            raise e
             messages.error(request, "Order not found.")
 
     def discount(self, request, queryset):

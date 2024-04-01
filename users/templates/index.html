@@ -82,14 +82,14 @@
         <div>
             <h1 class="logo"><a href="{% url 'users:index' %}">Hello World</a></h1>
             {% if user.is_authenticated %}
-                <p>你已登录，欢迎你：<a href="#">{{ user.username }}</a></p>
+                <p>You are logged in, welcome: <a href="#">{{ user.username }}</a></p>
                 <div class="btn-group">
-                    <a href="{% url 'users:logout' %}" class="btn">注销登录</a>
+                    <a href="{% url 'users:logout' %}" class="btn">LOG OUT</a>
 {#                    <a href="{% url 'users:logout' %}?next={{ request.path }}" class="btn">注销登录</a>#}
 {#                    <a href="{% url 'users:password_change_form' %}" class="btn">修改密码</a>#}
                 </div>
             {% else %}
-                <p>你还没有登录，请</p>
+                <p>You are not logged in</p>
                 <!-- Login Form -->
                 <form method="post" action="{% url 'users:login' %}">
                     {% csrf_token %}
@@ -100,10 +100,10 @@
                     <div class="form-group">
                         {{ form.password.label_tag }} {{ form.password }}
                     </div>
-                    <button type="submit" class="btn">登录</button>
+                    <button type="submit" class="btn">Log In</button>
                 </form>
                 <div class="btn-group">
-                    <a href="{% url 'users:register' %}" class="btn">注册</a>
+                    <a href="{% url 'users:register' %}" class="btn">Register</a>
                 </div>
             {% endif %}
         </div>

@@ -1,9 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# @Time    : 2024/3/31 9:33
-# @Author  : 晚秋
-# @File    : validate.py
-# @Description : 文件作用注释
 from django.core.exceptions import ValidationError
 import os
 

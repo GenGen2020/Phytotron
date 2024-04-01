@@ -10,9 +10,9 @@
     <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
     <script>
         $(function () {
-            // 不可选的日期
+            // Optional dates
             var disabledDates = {{ refuse|safe}};
-            // 需要标红的日期
+            // Dates to be redlined
             var highlightDates = {{ clean_date|safe }};
             var bluedata = {{ pedding_date|safe }};
 
@@ -25,11 +25,11 @@
                     var blue_var = bluedata.indexOf(dateString) > -1;
 
                     if (isDisabled) {
-                        return [false, "", "Unavailable"]; // 不可选
+                        return [false, "", "Unavailable"]; // unselectable
                     } else if (isHighlight) {
-                        return [true, "highlight", "clean Day"]; // 标红
+                        return [true, "highlight", "clean Day"]; // mark red
                     } else if (blue_var) {
-                        return [true, "blue", "Booked Day"]; // 标红
+                        return [true, "blue", "Booked Day"]; // mark red
 
                     } else {
                         return [true];
